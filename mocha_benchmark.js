@@ -4,8 +4,8 @@ var MochaBenchmark = {};
   var defaultOptions = {
     // freeze so user does not accidentally add items.
     versions: Object.freeze([]),
-    test: test,
-    suite: suite,
+    test: it,
+    suite: describe,
     prefix: ''
   };
 
@@ -85,7 +85,7 @@ var MochaBenchmark = {};
         if (bench.length === 0)
           return done();
 
-        this.timeout(null);
+        this.timeout(0);
         // quick formatting hack
         console.log();
 

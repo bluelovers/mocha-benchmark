@@ -14,19 +14,19 @@ Benchmark.options.delay = 0;
 Benchmark.options.minTime = 0;
 
 bench.suite('integration', function(perf) {
-  test('perf.test', function() {
+  it('perf.test', function() {
     assert.ok(perf.test, 'has .test');
   });
 
-  test('has compare', function() {
+  it('has compare', function() {
     assert.ok(perf.compare, 'has compare');
   });
 
-  suite('compare', function() {
+    describe('compare', function() {
     var iter = 0;
     perf.compare(function(perf, global) {
 
-      test('global', function() {
+        it('global', function() {
         if (iter === 0) {
           assert.equal(global, PREVIOUS);
         } else if (iter === 1) {

@@ -1,28 +1,29 @@
-suite('mocha benchmark', function() {  
-  test('#create', function() {
+
+describe('mocha benchmark', function() {
+  it('#create', function() {
     assert.ok(MochaBenchmark.create);
   });
 
-  test('#create - no benchmark', function() {
+  it('#create - no benchmark', function() {
     assert.throws(function() {
       subject.create();
     });
   });
 
-  suite('create with benchmark', function() {
+  describe('create with benchmark', function() {
     var subject;
 
-    suiteSetup(function() {
+    before(function() {
       subject = MochaBenchmark.create({
         Benchmark: Benchmark
       });
     });
 
-    test('.options.Benchmark', function() {
+    it('.options.Benchmark', function() {
       assert.equal(subject.options.Benchmark, Benchmark);
     });
 
-    test('#suite', function() {
+    it('#suite', function() {
       assert.ok(subject.suite);
     });
   });

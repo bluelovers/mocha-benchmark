@@ -22,7 +22,7 @@ test
 .gitkeep
 
 /.*
-/yarn.lock
-/yarn-error.log
+/*.lock
+/*.log
 /bin/*.d.ts
 /readme/

@@ -2,3 +2,25 @@
 /test-agent/
 Makefile
 /.idea/
+### npm template
+.idea
+
+~ci.list.txt
+~ci.log.txt
+~ci.errors.txt
+
+*.stackdump
+*.bak
+*.old
+
+tsconfig.json
+#package-lock.json
+
+test
+
+.github
+.gitkeep
+
+/.*
+/yarn.lock
+/yarn-error.log

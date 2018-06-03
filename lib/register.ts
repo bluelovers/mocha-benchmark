@@ -13,7 +13,7 @@ const OptionalRequire = _OptionalRequire(require);
 
 export function registerGlobal()
 {
-	let myGlobal = require('./lib/global') as IGlobal;
+	let myGlobal = require('./global') as IGlobal;
 	let chai: typeof _chai = OptionalRequire('chai');
 
 	if (!('assert' in myGlobal))

@@ -9,12 +9,19 @@
     "bdd",
     "benchmark",
     "chai",
+    "cli",
+    "debug",
+    "debug configuration",
     "expect",
+    "idea",
+    "intellij",
+    "intellij idea",
     "microtime",
     "mocha",
     "mocha-benchmark",
     "performance",
     "promise",
+    "run configuration",
     "should",
     "speed",
     "sync",
@@ -37,6 +44,9 @@
   "types": [
     "./global.d.ts"
   ],
+  "bin": {
+    "mocha-benchmark2": "./bin/mocha-benchmark-cli.js"
+  },
   "directories": {
     "lib": "lib",
     "test": "test"

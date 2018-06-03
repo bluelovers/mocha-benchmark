@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+// fake mocha for ide support (ex: idea)
+require('./mocha-benchmark-cli')

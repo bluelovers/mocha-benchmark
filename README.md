@@ -27,6 +27,19 @@ mocha --require mocha-benchmark2/register test/demo.test.demo.js
 mocha --require mocha-benchmark2/register "!(node_modules|demo)/**/*.+(test|spec).js" test/demo.test.demo.js
 ```
 
+## lazy cli
+
+> this cli help u skip `--require mocha-benchmark2/register`
+
+```nodemon
+mocha-benchmark2 "!(node_modules|demo)/**/*.+(test|spec).js" test/demo.test.demo.js
+```
+
+## ide support (ex: idea)
+
+![2018-06-03-12-09-54-3.jpg](readme/2018-06-03-12-09-54-3.jpg)
+![2018-06-03-12-10-11-4.jpg](readme/2018-06-03-12-10-11-4.jpg)
+
 ## register
 
 when u require `mocha-benchmark2/register`

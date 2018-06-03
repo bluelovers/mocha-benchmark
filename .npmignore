@@ -25,4 +25,6 @@ test
 /*.lock
 /*.log
 /bin/*.d.ts
+readme
+/readme/*
 /readme/

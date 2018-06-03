@@ -1,6 +1,6 @@
 {
   "name": "mocha-benchmark2",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Mocha + Benchmark + Chai, support sync and async test",
   "keywords": [
     "assert",

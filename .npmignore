@@ -24,3 +24,4 @@ test
 /.*
 /yarn.lock
 /yarn-error.log
+/bin/*.d.ts

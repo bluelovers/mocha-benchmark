@@ -26,3 +26,4 @@ tests/*.d.ts
 tests/temp*
 /yarn.lock
 /yarn-error.log
+/bin/*.d.ts

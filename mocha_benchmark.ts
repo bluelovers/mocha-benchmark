@@ -10,6 +10,7 @@ import _Global = require('./lib/global');
 import * as MochaLogger from 'mocha-logger';
 import { logSuccess, mcolor, styles } from './lib/log';
 import registerGlobal from './lib/register';
+import { isAsyncFunc, isPromise, parseFuncArgs } from './lib/util';
 
 const OptionalRequire = _OptionalRequire(require);
 
@@ -135,6 +136,8 @@ export { MochaBenchmark }
 
 export type IContextCompareCallback<T = IGlobal, R = any> = (currentContext: Context<T, R>, currentData: T, vContext: Context<T, R>[]) => void;
 
+export type IContextTestCallback<T = IGlobal, R = any, V extends any | void | Promise<any | void> = any | void | Promise<any | void>> = (deferred: Benchmark.Deferred, currentData: T, currentContext: Context<T, R>) => V;
+
 export class Context<T = IGlobal, R = any>
 {
 	bench: Benchmark.Suite;
@@ -169,12 +172,17 @@ export class Context<T = IGlobal, R = any>
 		this.options = options;
 	}
 
-	it(name: string, test, options?: Benchmark.Options)
+	it(name: string, test: IContextTestCallback<T, R>, options?: Benchmark.Options)
 	{
 		return this.test(name, test, options);
 	}
 
-	test(name: string, test: (deferred: Benchmark.Deferred, currentData: T, currentContext: this) => any | void | Promise<any | void>, options?: Benchmark.Options)
+	add(name: string, test: IContextTestCallback<T, R>, options?: Benchmark.Options)
+	{
+		return this.test(name, test, options);
+	}
+
+	test(name: string, test: IContextTestCallback<T, R>, options?: Benchmark.Options)
 	{
 		let context = this;
 
@@ -289,14 +297,34 @@ export class Context<T = IGlobal, R = any>
 		{
 			let bench = new Benchmark.Suite(task.name, task.options);
 
+//			console.dir({
+//				name: task.name,
+//				fn: task.fn,
+//				isAsyncFunc: isAsyncFunc(task.fn),
+//				parseFuncArgs: parseFuncArgs(task.fn),
+//			});
+
 			versions.map(function ([name, global], index)
 			{
 				let t = task.clone();
 				const fn = t.fn;
 
-				bench.add(
-					name,
-					function (deferred, ...argv)
+				function wrapFn(options: Benchmark.Options)
+				{
+					if (!options.defer && !options.async)
+					{
+						return function (d, ...argv)
+						{
+							let _self = this;
+
+							return fn.call(_self,
+								d || _self, global, vContexts[index],
+								...argv,
+							);
+						};
+					}
+
+					return function (deferred, ...argv)
 					{
 						let _self = this;
 
@@ -304,9 +332,16 @@ export class Context<T = IGlobal, R = any>
 						{
 							try
 							{
-								let p = await fn.call(self, deferred || _self, global, vContexts[index], ...argv);
+								let p = fn.call(_self, deferred, global, vContexts[index], ...argv);
 
-								resolve(p);
+								if (isPromise(p))
+								{
+									resolve(p);
+								}
+								else
+								{
+									resolve(p);
+								}
 							}
 							catch (e)
 							{
@@ -333,8 +368,12 @@ export class Context<T = IGlobal, R = any>
 							{
 								deferred.resolve(p);
 							})
-						;
-					},
+					}
+				}
+
+				bench.add(
+					name,
+					wrapFn(task.options),
 					{
 						...task.options,
 						name,

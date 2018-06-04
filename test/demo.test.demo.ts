@@ -26,12 +26,12 @@ let bench = MochaBenchmark.create({
 bench.suite(relative(__filename), function (topLevelContext, topLevelData)
 {
 
-	topLevelContext.test('top async', async function (deferred, currentData, currentContext)
+	topLevelContext.test('top async => this will throw error and stop', async function (deferred, currentData, currentContext)
 	{
-
+		expect(1).to.equal(3);
 	});
 
-	topLevelContext.test('top sync', function (...argv)
+	topLevelContext.test('top sync => should still can run task', function (...argv)
 	{
 //			expect(1).to.equal(3);
 	});
@@ -42,7 +42,7 @@ bench.suite(relative(__filename), function (topLevelContext, topLevelData)
 
 		currentContext.test('async', async function (deferred, currentData, currentContext)
 		{
-			expect(1).to.equal(3);
+
 		});
 
 		let b;
@@ -52,10 +52,10 @@ bench.suite(relative(__filename), function (topLevelContext, topLevelData)
 //			expect(1).to.equal(3);
 		});
 
-	})
+	});
 
 	// same level
-	topLevelContext.compare(function (currentContext, currentData)
+	0 && topLevelContext.compare(function (currentContext, currentData)
 	{
 		currentContext.test('same async', async function (deferred, currentData, currentContext)
 		{

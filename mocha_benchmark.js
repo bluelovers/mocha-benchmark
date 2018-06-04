@@ -9,6 +9,7 @@ const MochaLogger = require("mocha-logger");
 const log_1 = require("./lib/log");
 const register_1 = require("./lib/register");
 exports.registerGlobal = register_1.default;
+const util_1 = require("./lib/util");
 const OptionalRequire = _OptionalRequire(require);
 function getOptions(options) {
     if (typeof options !== 'object') {
@@ -92,6 +93,9 @@ class Context {
     it(name, test, options) {
         return this.test(name, test, options);
     }
+    add(name, test, options) {
+        return this.test(name, test, options);
+    }
     test(name, test, options) {
         let context = this;
         options = Object.assign({}, this.options.optionsBenchmark, options, {
@@ -148,38 +152,58 @@ class Context {
         suiteFn(context, context.global, vContexts);
         context.bench.forEach(function (task) {
             let bench = new Benchmark.Suite(task.name, task.options);
+            //			console.dir({
+            //				name: task.name,
+            //				fn: task.fn,
+            //				isAsyncFunc: isAsyncFunc(task.fn),
+            //				parseFuncArgs: parseFuncArgs(task.fn),
+            //			});
             versions.map(function ([name, global], index) {
                 let t = task.clone();
                 const fn = t.fn;
-                bench.add(name, function (deferred, ...argv) {
-                    let _self = this;
-                    new Promise(async function (resolve, reject) {
-                        try {
-                            let p = await fn.call(self, deferred || _self, global, vContexts[index], ...argv);
-                            resolve(p);
-                        }
-                        catch (e) {
-                            reject(e);
-                        }
-                    })
-                        .catch(function (error) {
-                        // @ts-ignore
-                        deferred.reject(error);
-                        /*
-                        // @ts-ignore
-                        let event = Benchmark.Event('error');
-                        event.message = error;
+                function wrapFn(options) {
+                    if (!options.defer && !options.async) {
+                        return function (d, ...argv) {
+                            let _self = this;
+                            return fn.call(_self, d || _self, global, vContexts[index], ...argv);
+                        };
+                    }
+                    return function (deferred, ...argv) {
+                        let _self = this;
+                        new Promise(async function (resolve, reject) {
+                            try {
+                                let p = fn.call(_self, deferred, global, vContexts[index], ...argv);
+                                if (util_1.isPromise(p)) {
+                                    resolve(p);
+                                }
+                                else {
+                                    resolve(p);
+                                }
+                            }
+                            catch (e) {
+                                reject(e);
+                            }
+                        })
+                            .catch(function (error) {
+                            // @ts-ignore
+                            deferred.reject(error);
+                            /*
+                            // @ts-ignore
+                            let event = Benchmark.Event('error');
+                            event.message = error;
 
 //								deferred.error = error;
 
-                        deferred.benchmark.error = error;
-                        deferred.benchmark.emit(event);
-                        */
-                    })
-                        .then(function (p) {
-                        deferred.resolve(p);
-                    });
-                }, Object.assign({}, task.options, { name }));
+                            deferred.benchmark.error = error;
+                            deferred.benchmark.emit(event);
+                            */
+                        })
+                            .then(function (p) {
+                            deferred.resolve(p);
+                        });
+                    };
+                }
+                bench.add(name, wrapFn(task.options), Object.assign({}, task.options, { name }));
             });
             opts.test(task.name, function (done) {
                 if (bench.length === 0) {

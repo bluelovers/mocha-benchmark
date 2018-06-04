@@ -28,6 +28,7 @@ import * as MochaBenchmark from './mocha_benchmark';
 export default MochaBenchmark;
 export { MochaBenchmark };
 export declare type IContextCompareCallback<T = IGlobal, R = any> = (currentContext: Context<T, R>, currentData: T, vContext: Context<T, R>[]) => void;
+export declare type IContextTestCallback<T = IGlobal, R = any, V extends any | void | Promise<any | void> = any | void | Promise<any | void>> = (deferred: Benchmark.Deferred, currentData: T, currentContext: Context<T, R>) => V;
 export declare class Context<T = IGlobal, R = any> {
     bench: Benchmark.Suite;
     global: T | any;
@@ -41,8 +42,9 @@ export declare class Context<T = IGlobal, R = any> {
     _version?: [string, T];
     vContexts?: Context<T, R>[];
     constructor(bench: Benchmark.Suite, global: R | T, prefix: string, options: defaultOptions<T>);
-    it(name: string, test: any, options?: Benchmark.Options): void;
-    test(name: string, test: (deferred: Benchmark.Deferred, currentData: T, currentContext: this) => any | void | Promise<any | void>, options?: Benchmark.Options): void;
+    it(name: string, test: IContextTestCallback<T, R>, options?: Benchmark.Options): void;
+    add(name: string, test: IContextTestCallback<T, R>, options?: Benchmark.Options): void;
+    test(name: string, test: IContextTestCallback<T, R>, options?: Benchmark.Options): void;
     getPrefix(): string;
     describe(name: string, suiteFn: IContextCompareCallback<T, R>): any;
     describe(suiteFn: IContextCompareCallback<T, R>): any;

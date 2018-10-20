@@ -47,7 +47,7 @@ export function registerGlobal()
 
 	if (!('Benchmark' in myGlobal))
 	{
-		myGlobal.Benchmark = OptionalRequire('benchmark');
+		myGlobal.Benchmark = OptionalRequire('benchmark2') || OptionalRequire('benchmark');
 	}
 
 	return myGlobal;

@@ -5,21 +5,13 @@ import _isAsyncFunction_2 = require('is-async-func');
 import functionArguments = require('function-arguments');
 import Bluebird = require('bluebird');
 
-import _parseFunction = require('parse-function');
-
-const _parseFunc = _parseFunction({
-	ecmaVersion: 2017
-});
+import _parseFunction = require('func-args');
 
 export const SUPPORT_PARSE_FUNC_ARGS = parseFuncArgs((a, b, c) => {}).length === 3;
 
-console.log(parseFuncArgs((a, b, {
-	k
-}, ...c) => {}));
-
 export function parseFuncArgs(fn: Function): string[]
 {
-	console.log(_parseFunc.parse(fn));
+	//console.log(_parseFunction.parse(fn));
 
 	return functionArguments(fn)
 }

@@ -1,3 +1,4 @@
+/// <reference types="mocha" />
 /// <reference types="node" />
 /// <reference types="chai" />
 import * as MochaBenchmark from '../mocha_benchmark';
